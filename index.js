@@ -129,7 +129,13 @@ app.post('/api/users',(req,res)=>{
 const mongoose = require('mongoose');
 const url = process.env.MONGODB_URI//`mongodb+srv://jairom94:R6vy5ex5VGJDNuYK@clustermongotest.blhdvos.mongodb.net/?retryWrites=true&w=majority&appName=clustermongotest`
 mongoose.set('strictQuery',false);
-mongoose.connect(url);
+mongoose.connect(url)
+.then(()=>{
+    console.log('Conectado a la base de datos.')
+})
+.catch((error)=>{
+    console.log('No se pudo conectar a la base de datos.', error)
+});
 const personSchema = new mongoose.Schema({
     name:{
         type:String,
