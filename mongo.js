@@ -17,28 +17,28 @@ const notesstatics = [
 const TYPE_MODEL = {
     note:'note',
     person:'person',
-    read:'read'
+    //read:'read'
 }
 
 
-if(process.argv.length < 3){
+if(process.argv.length <= 3 ){
     console.log('Dame un tipo de modelo como argumentos');
+    console.log('... Note/Person name number');
     process.exit(1);
 }
 
 //jairom94
 //R6vy5ex5VGJDNuYK
 
-const typeModel = process.argv[2];
+const typeModel = process.argv[2].toLowerCase();
 
-//const password = process.argv[2];
 const url = `mongodb+srv://jairom94:R6vy5ex5VGJDNuYK@clustermongotest.blhdvos.mongodb.net/?retryWrites=true&w=majority&appName=clustermongotest`
 mongoose.set('strictQuery',false);
 mongoose.connect(url);
 
 let schema = {}
 let nameModel = ''
-if(TYPE_MODEL.person === typeModel){
+if(typeModel === TYPE_MODEL.person){
     schema.name = String;
     schema.number = String;
     nameModel = 'Person';
@@ -50,12 +50,18 @@ else if(typeModel === TYPE_MODEL.note){
 }
 
 const modelSchema = new mongoose.Schema(schema);
+modelSchema.set('toJSON',{
+    transform: (document, returnedObject) => {
+      returnedObject.id = returnedObject._id.toString()
+      delete returnedObject._id
+      delete returnedObject.__v
+    }
+})
 
 const Model = mongoose.model(nameModel,modelSchema);
 
 if(process.argv[3] === 'read'){
     console.log(Model);
-    console.log(nameModel);
     Model.find({}).then((result)=>{
         console.log(result);
         mongoose.connection.close();

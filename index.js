@@ -145,7 +145,13 @@ const personSchema = new mongoose.Schema({
     number:{
         type:String,
         required:true,
-        minlength:8
+        minlength:8,
+        validate:{
+            validator:function(v){
+                return /^\d{2,3}-\d{7,8}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid phone number!`
+        }
     }    
 });
 
@@ -239,7 +245,7 @@ function fieldExist(data,dataRequest){
     }
     return fieldsExist;
 }
-
+//Create person
 app.post('/api/persons',(req,res,next)=>{
     const person = req.body;    
     const person_ = new Person({
